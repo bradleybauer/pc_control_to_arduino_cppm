@@ -7,7 +7,7 @@
 #include <fcntl.h>
 
 #include <SerialStream.h>
-#include "../Arduino/sketch_jul17b/config.h"
+#include "../arduino_code/config.h"
 #include "joystick.h"
 
 using namespace LibSerial;
@@ -53,6 +53,7 @@ int main() {
 			// We're only sending the sticks
 			if (jse.isAxis()) {
 
+				// Rough calibration. The xbox 360 controller is really bad ha.
 				int n = jse.number;
 				float invert = 1.f;
 				float shift = 0.;
@@ -70,7 +71,6 @@ int main() {
 
 					range = range * step(fabs(range), .09);
 					int sgn = range > 0 ? 1 : -1;
-					// range = 2.*std::tanh(std::tanh(std::tanh(std::tanh(std::max(0.,fabs(range) - .09)*sgn))));
 					range = std::max(0.,fabs(range) - .09)*sgn;
 					range = range*range*range;
 
@@ -84,20 +84,16 @@ int main() {
 		std::this_thread::sleep_for(std::chrono::milliseconds(17));
 	}
 
-	return 0;
-
-
-	// Measure latency
-
-	int x;
-	std::cin >> x;
-
-	js.sample(&jse);
-	data[0] = CHANNEL_MAXIMUM_VALUE;
-	while (1) {
-		arduino.write(indices, 1);
-		arduino.write((char*)(data), 2);
-	}
+	// Roughly measure latency
+	// int x;
+	// std::cin >> x;
+  //
+	// js.sample(&jse);
+	// data[0] = CHANNEL_MAXIMUM_VALUE;
+	// while (1) {
+	// 	arduino.write(indices, 1);
+	// 	arduino.write((char*)(data), 2);
+	// }
 
 	return 0;
 }
